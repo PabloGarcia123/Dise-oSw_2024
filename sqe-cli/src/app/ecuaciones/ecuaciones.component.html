@@ -1,0 +1,13 @@
+<h3>Ecuaciones</h3>
+
+<input type ="text" [(ngModel)] = "currentEquation.eq">
+<input type = "number" min="1" [(ngModel)] = "currentEquation.lambda">
+<button (click)="add()">Add</button>
+<br>
+
+<ul>
+  <li *ngFor="let equation of equations">
+    {{equation.eq}} ({{equation.lambda}} &nbsp;
+    <span (click)="remove(equation)">Remove</span>)
+  </li>
+</ul>
