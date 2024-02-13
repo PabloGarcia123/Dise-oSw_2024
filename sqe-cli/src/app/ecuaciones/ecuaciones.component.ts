@@ -20,6 +20,8 @@ export class EcuacionesComponent {
   constructor(private service: EcuacionesService) { }
 
   add() : void {
+    let copia = new Equation()
+    copia.eq = this.currentEquation.eq
     this.equations.push(this.currentEquation);
   }
 
@@ -35,10 +37,10 @@ export class EcuacionesComponent {
   generarHamiltoniano(){
     this.service.generarHamiltoniano(this.equations).subscribe(
       (response) => {
-        console.log(response);
+        alert('Hamiltoniano generado correctamente');
       },
       (error) => {
-        console.log(error);
+        alert('Error al generar el Hamiltoniano');
       }
     );
   }

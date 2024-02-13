@@ -5,9 +5,12 @@
 <button (click)="add()">Add</button>
 <br>
 
-<ul>
-  <li *ngFor="let equation of equations">
-    {{equation.eq}} ({{equation.lambda}} &nbsp;
-    <span (click)="remove(equation)">Remove</span>)
+
+<ul *ngFor="let equation of equations">
+  <li>
+    {{equation.eq}} {{equation.lambda}} &nbsp;
+    <span (click)="remove(equation)">Remove</span>
   </li>
 </ul>
+
+<button (click)="generarHamiltoniano()">Generar Hamiltoniano</button>
