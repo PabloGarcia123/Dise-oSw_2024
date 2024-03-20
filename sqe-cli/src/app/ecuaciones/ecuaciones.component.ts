@@ -1,14 +1,9 @@
 import { Component } from '@angular/core';
 import { Equation } from './Equation';
-import { FormsModule } from '@angular/forms';
-import { NgFor } from '@angular/common';
 import { EcuacionesService } from '../ecuaciones.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-ecuaciones',
-  standalone: true,
-  imports: [FormsModule, NgFor, HttpClientModule],
   templateUrl: './ecuaciones.component.html',
   styleUrl: './ecuaciones.component.css'
 })
@@ -16,6 +11,8 @@ export class EcuacionesComponent {
 
   currentEquation: Equation = new Equation();
   equations: Equation[] = [];
+  respuesta?: string; 
+  manager: any;
   
   constructor(private service: EcuacionesService) { }
 
@@ -35,12 +32,24 @@ export class EcuacionesComponent {
   }
 
   generarHamiltoniano(){
-    this.service.generarHamiltoniano(this.equations).subscribe(
+    this.service.generarHamiltoniano(this.manager.token!, this.equations).subscribe(
       (response) => {
         alert('Hamiltoniano generado correctamente');
+        this.respuesta = response.p;
       },
       (error) => {
         alert('Error al generar el Hamiltoniano');
+      }
+    );
+  }
+  ejecutarCodigo(){
+    return this.service.ejecutarCodigo(this.manager.token!, this.currentEquation.eq).subscribe(
+      (response) => {
+        alert('Código ejecutado correctamente');
+        this.respuesta = result.p
+      },
+      (error) => {
+        alert('Error al ejecutar el código');
       }
     );
   }

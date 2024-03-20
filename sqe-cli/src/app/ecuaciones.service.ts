@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Equation } from './ecuaciones/Equation';
 
@@ -6,12 +6,15 @@ import { Equation } from './ecuaciones/Equation';
   providedIn: 'root'
 })
 export class EcuacionesService {
-
+  
   constructor(private client : HttpClient) { }
 
-  generarHamiltoniano(equations : Equation[]) {
-    return this.client.put('http://localhost:8080/generarHamiltoniano', equations);
+  generarHamiltoniano(token : string, equations : Equation[]) {
+    const headers = new HttpHeaders().set('token', token);
+    return this.client.put('http://localhost:8080/generarHamiltoniano', equations, {"headers": headers});
   }
-
+  ejecutarCodigo(arg0: any, eq: String) {
+      return this.client.post('http://localhost:8080/ejecutarCodigo', eq);
+    }
   
 }

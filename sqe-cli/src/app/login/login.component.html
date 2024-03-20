@@ -1,0 +1,11 @@
+<div>
+    <h4>Crear Cuenta</h4>
+
+    Correo: <input type="text" [(ngModel)]="email">
+    <br>
+    Contraseña: <input type="password" [(ngModel)]="pwd">   
+    <br>
+    <button (click)="login()">Crear Cuenta</button>
+    <br>
+    <span style="color: limegreen;">{{ error }}</span>
+</div>
