@@ -1,0 +1,48 @@
+.equations-container {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.equations-container h3 {
+    margin-top: 0;
+}
+
+.equations-container input {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.equations-container button {
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px; /* Añade un margen entre los botones */
+}
+
+.equations-container button:hover {
+    background-color: #45a049;
+}
+
+.equations-container .remove-button {
+    color: red;
+    cursor: pointer;
+}
+
+.equations-container .remove-button:hover {
+    text-decoration: underline;
+}
+
+.equations-container code {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: monospace;
+}

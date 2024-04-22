@@ -7,13 +7,15 @@ import { EcuacionesComponent } from './ecuaciones/ecuaciones.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
+import { PagosComponent } from './pagos/pagos.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
     LoginComponent,
-    EcuacionesComponent
+    EcuacionesComponent,
+    PagosComponent
     
   ],
   imports: [

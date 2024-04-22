@@ -1,22 +1,23 @@
-<h3>Ecuaciones</h3>
+<div class="equations-container">
+  <h3>Ecuaciones</h3>
 
-<input type ="text" [(ngModel)] = "currentEquation.eq">
-<input type = "number" min="1" [(ngModel)] = "currentEquation.lambda">
-<button (click)="add()">Add</button>
-<br>
+  <input type="text" placeholder="Ecuación" [(ngModel)]="currentEquation.eq">
+  <input type="number" placeholder="Lambda" min="1" [(ngModel)]="currentEquation.lambda">
+  <button class="add-button" (click)="add()">Añadir</button>
+  <button class="generate-button" (click)="generarHamiltoniano()">Generar Hamiltoniano</button>
+  <button class="execute-button" (click)="ejecutarCodigo()">Ejecutar Código</button>
+  <button class="matriz-button" (click)="generarMatriz()">Generar Matriz</button>
+  <br>
 
+  <ul *ngFor="let equation of equations">
+      <li>
+          {{equation.eq}} {{equation.lambda}} &nbsp;
+          <span class="remove-button" (click)="remove(equation)">Eliminar</span>
+      </li>
+  </ul>
 
-<ul *ngFor="let equation of equations">
-  <li>
-    {{equation.eq}} {{equation.lambda}} &nbsp;
-    <span (click)="remove(equation)">Remove</span>
-  </li>
-</ul>
-
-<button (click)="generarHamiltoniano()">Generar Hamiltoniano</button>
-
-<br>
-
-<button  (click)= "ejecutarCodigo()">Ejecutar Codigo</button>
-<br>
-<code>{{ respuesta }}</code>
+  <code>{{ respuesta }}</code>
+  <br>
+  <button (click)="logout()">Cerrar sesión</button>
+  <br>
+</div>

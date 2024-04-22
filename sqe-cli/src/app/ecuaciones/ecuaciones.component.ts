@@ -1,39 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Equation } from './Equation';
 import { EcuacionesService } from '../ecuaciones.service';
 
 @Component({
   selector: 'app-ecuaciones',
   templateUrl: './ecuaciones.component.html',
-  styleUrl: './ecuaciones.component.css'
+  styleUrls: ['./ecuaciones.component.css']
 })
-export class EcuacionesComponent {
+
+export class EcuacionesComponent implements OnInit {
 
   currentEquation: Equation = new Equation();
   equations: Equation[] = [];
-  respuesta?: string; 
-  manager: any;
-  
+  respuesta?: string;
+  token = sessionStorage.getItem('token');
+
+
   constructor(private service: EcuacionesService) { }
 
-  add() : void {
-    let copia = new Equation()
-    copia.eq = this.currentEquation.eq
-    this.equations.push(this.currentEquation);
+  ngOnInit(): void {
+
   }
 
-  remove(equation : Equation){
+  add(): void {
+    const copia = new Equation();
+    copia.eq = this.currentEquation.eq;
+    copia.lambda = this.currentEquation.lambda;
+    this.equations.push(copia);
+  }
+
+  remove(equation: Equation): void {
     for (let i = 0; i < this.equations.length; i++) {
       if (this.equations[i] === equation) {
-        this.equations.splice(i, 1)
-        break
+        this.equations.splice(i, 1);
+        break;
       }
     }
   }
 
-  generarHamiltoniano(){
-    this.service.generarHamiltoniano(this.manager.token!, this.equations).subscribe(
-      (response) => {
+  generarHamiltoniano(): void {
+    console.log("token metodo",this.token);
+    
+    if (!this.token) {
+      console.error('No se ha encontrado un token válido.');
+      return;
+    }
+
+    // Realizar la solicitud con el token actual
+    this.service.generarHamiltoniano(this.token, this.equations).subscribe(
+      (response: any) => {
         alert('Hamiltoniano generado correctamente');
         this.respuesta = response.p;
       },
@@ -42,15 +57,34 @@ export class EcuacionesComponent {
       }
     );
   }
-  ejecutarCodigo(){
-    return this.service.ejecutarCodigo(this.manager.token!, this.currentEquation.eq).subscribe(
-      (response) => {
+
+  ejecutarCodigo(): void {
+    this.service.ejecutarCodigo(this.token || '', this.currentEquation.eq).subscribe(
+      (response: any) => {
         alert('Código ejecutado correctamente');
-        this.respuesta = result.p
+        this.respuesta = response.p;
       },
       (error) => {
         alert('Error al ejecutar el código');
       }
     );
   }
+
+  generarMatriz(): void {
+    this.service.generarMatriz(this.token || '', this.currentEquation.eq).subscribe(
+      (response: any) => {
+        alert('Matriz generada correctamente');
+        this.respuesta = response.p;
+      },
+      (error) => {
+        alert('Error al generar la matriz');
+      }
+    );
+  }
+  logout(): void {
+    sessionStorage.removeItem('token');
+    window.location.href = '/login';
+    //alert('Sesión cerrada');
+  }
+  
 }

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class UsersService {
 
-  constructor(private client : HttpClient) { }
+  constructor(private client: HttpClient) { }
 
   registrar(email: string, pwd1: string, pwd2: string) {
 
@@ -19,8 +19,8 @@ export class UsersService {
     return this.client.post('http://localhost:9000/users/registrar', info);
   }
 
-  login(email: string, pwd: string) : Observable<any>{
-      
+  login(email: string, pwd: string): Observable<any> {
+
     let info = {
       email: email,
       pwd: pwd,

@@ -20,7 +20,7 @@ export class RegisterComponent{
   registrar() {
     this.userService.registrar(this.email, this.pwd1, this.pwd2).subscribe(
       result => {
-        alert('Usuario registrado')
+        //alert('Usuario registrado')
       },
       error => {
         this.error = error;
