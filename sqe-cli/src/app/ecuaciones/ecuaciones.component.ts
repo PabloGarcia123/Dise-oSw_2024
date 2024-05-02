@@ -9,10 +9,10 @@ import { EcuacionesService } from '../ecuaciones.service';
 })
 
 export class EcuacionesComponent implements OnInit {
-
   currentEquation: Equation = new Equation();
   equations: Equation[] = [];
-  respuesta?: string;
+  hamiltoniano: Equation = new Equation();
+  respuesta: any;
   token = sessionStorage.getItem('token');
 
 
@@ -21,6 +21,8 @@ export class EcuacionesComponent implements OnInit {
   ngOnInit(): void {
 
   }
+
+  
 
   add(): void {
     const copia = new Equation();
@@ -45,12 +47,14 @@ export class EcuacionesComponent implements OnInit {
       console.error('No se ha encontrado un token válido.');
       return;
     }
-
     // Realizar la solicitud con el token actual
     this.service.generarHamiltoniano(this.token, this.equations).subscribe(
       (response: any) => {
         alert('Hamiltoniano generado correctamente');
-        this.respuesta = response.p;
+        console.log("response: ",response);
+        this.hamiltoniano = response;
+        console.log("respuesta: ",this.hamiltoniano);
+        console.log("respuesta: ",this.hamiltoniano.eq);
       },
       (error) => {
         alert('Error al generar el Hamiltoniano');

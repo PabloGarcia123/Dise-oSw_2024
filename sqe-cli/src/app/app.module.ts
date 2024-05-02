@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { PagosComponent } from './pagos/pagos.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
