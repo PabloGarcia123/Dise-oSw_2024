@@ -11,7 +11,6 @@ import { EcuacionesService } from '../ecuaciones.service';
 export class EcuacionesComponent implements OnInit {
   currentEquation: Equation = new Equation();
   equations: Equation[] = [];
-  hamiltoniano: Equation = new Equation();
   respuesta: any;
   token = sessionStorage.getItem('token');
 
@@ -21,9 +20,6 @@ export class EcuacionesComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
-  
-
   add(): void {
     const copia = new Equation();
     copia.eq = this.currentEquation.eq;
@@ -41,8 +37,8 @@ export class EcuacionesComponent implements OnInit {
   }
 
   generarHamiltoniano(): void {
-    console.log("token metodo",this.token);
-    
+    console.log("token metodo", this.token);
+
     if (!this.token) {
       console.error('No se ha encontrado un token válido.');
       return;
@@ -51,19 +47,54 @@ export class EcuacionesComponent implements OnInit {
     this.service.generarHamiltoniano(this.token, this.equations).subscribe(
       (response: any) => {
         alert('Hamiltoniano generado correctamente');
-        console.log("response: ",response);
-        this.hamiltoniano = response;
-        console.log("respuesta: ",this.hamiltoniano);
-        console.log("respuesta: ",this.hamiltoniano.eq);
+        console.log("respuesta: ", response);
+        this.respuesta = this.formatResponse(response);
+        console.log("respuesta: ", this.respuesta);
       },
       (error) => {
         alert('Error al generar el Hamiltoniano');
       }
     );
   }
+  // Generar una cadena de texto con la información de las ecuaciones y sumandos
+  formatResponse(response: any): string {
+    let formattedResponse = '';
+    if (response && response.ecuaciones) {
+      response.ecuaciones.forEach((ecuacion: any, index: number) => {
+        if (ecuacion.sumandos && ecuacion.sumandos.length > 0) {
+          let equationString = '';
+          ecuacion.sumandos.forEach((sumando: any) => {
+            if (sumando.factor !== undefined && sumando.indexB !== undefined) {
+              // Sumando doble
+              equationString += `${sumando.factor}x${sumando.index}x${sumando.indexB} + `;
+            } else if (sumando.factor !== undefined && sumando.index !== undefined) {
+              // Sumando simple
+              equationString += `${sumando.factor}x${sumando.index} + `;
+            } else {
+              // Sumando inválido
+              equationString += 'Sumando inválido';
+            }
+          });
+          // Eliminar el último '+'
+          equationString = equationString.slice(0, -2);
+          formattedResponse += `Hamiltoniano: ${equationString}\n`;
+        } else {
+          formattedResponse += `Hamiltoniano: Sin sumandos\n`;
+        }
+      });
+    } else {
+      formattedResponse = 'No se recibió una respuesta válida del servidor.';
+    }
+    return formattedResponse;
+  }
 
   ejecutarCodigo(): void {
-    this.service.ejecutarCodigo(this.token || '', this.currentEquation.eq).subscribe(
+    if (!this.token) {
+      console.error('No se ha encontrado un token válido.');
+      return;
+    }
+    // Realizar la solicitud con el token actual
+    this.service.ejecutarCodigo(this.token, this.equations).subscribe(
       (response: any) => {
         alert('Código ejecutado correctamente');
         this.respuesta = response.p;
@@ -78,7 +109,7 @@ export class EcuacionesComponent implements OnInit {
     this.service.generarMatriz(this.token || '', this.currentEquation.eq).subscribe(
       (response: any) => {
         alert('Matriz generada correctamente');
-        this.respuesta = response.p;
+        this.respuesta = response;
       },
       (error) => {
         alert('Error al generar la matriz');
@@ -90,5 +121,5 @@ export class EcuacionesComponent implements OnInit {
     window.location.href = '/login';
     //alert('Sesión cerrada');
   }
-  
+
 }

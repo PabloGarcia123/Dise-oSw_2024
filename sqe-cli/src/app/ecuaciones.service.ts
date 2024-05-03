@@ -15,8 +15,9 @@ export class EcuacionesService {
 
     return this.client.put('http://localhost:8080/ecuaciones/generarHamiltoniano', equations, { "headers": headers });
   }
-  ejecutarCodigo(arg0: any, eq: String) {
-    return this.client.post('http://localhost:8080/ejecutarCodigo', eq);
+  ejecutarCodigo(token: string, equations: Equation[]) {
+    const headers = new HttpHeaders().set('token', token);
+    return this.client.put('http://localhost:8080/dwave/generarCodigo', equations, { "headers": headers });
   }
 
   generarMatriz(arg0: any, eq: String) {
