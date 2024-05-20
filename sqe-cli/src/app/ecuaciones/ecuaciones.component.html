@@ -1,23 +1,50 @@
 <div class="equations-container">
   <h3>Ecuaciones</h3>
 
-  <input type="text" placeholder="Ecuación" [(ngModel)]="currentEquation.eq">
-  <input type="number" placeholder="Lambda" min="1" [(ngModel)]="currentEquation.lambda">
-  <button class="add-button" (click)="add()">Añadir</button>
-  <button class="generate-button" (click)="generarHamiltoniano()">Generar Hamiltoniano</button>
-  <button class="execute-button" (click)="ejecutarCodigo()">Ejecutar Código</button>
-  <button class="matriz-button" (click)="generarMatriz()">Generar Matriz</button>
-  <br>
+  <div class="input-group">
+    <input type="text" placeholder="Ecuación" [(ngModel)]="currentEquation.eq">
+    <input type="number" placeholder="Lambda" min="1" [(ngModel)]="currentEquation.lambda">
+    <button class="add-button" (click)="add()">Añadir</button>
+  </div>
+  <div class="button-group">
+    <button class="generate-button" (click)="generarHamiltoniano();resetearCopiado()">Generar Hamiltoniano</button>
+    <button class="matriz-button" (click)="generarMatriz()">Generar Matriz</button>
+    <button class="execute-button" (click)="ejecutarCodigo()">Ejecutar Código</button>
+  </div>
 
-  <ul *ngFor="let equation of equations">
-      <li>
-          {{equation.eq}} {{equation.lambda}} &nbsp;
-          <span class="remove-button" (click)="remove(equation)">Eliminar</span>
-      </li>
+  <ul class="equations-list" *ngFor="let equation of equations">
+    <li>
+      {{ equation.eq }} {{ equation.lambda }} &nbsp;
+      <span class="remove-button" (click)="remove(equation);">Eliminar</span>
+    </li>
   </ul>
 
-  <code>{{ respuesta }}</code>
-  <br>
-  <button (click)="logout()">Cerrar sesión</button>
-  <br>
+  <div class="code-container" *ngIf="hamiltonianoGenerado">
+    <code>{{ hamiltonianoGenerado }}</code>
+    <button class="copy-button" (click)="copiarAlPortapapeles(hamiltonianoGenerado)">
+      <img [src]="copiado ? 'assets/garrapata.png' : 'assets/copiar.png'" alt="Copiar" class="copy-icon">
+    </button>
+  </div>
+  
+
+  <div *ngIf="matrizGenerada && matrizGenerada.length > 0" class="matriz-container">
+    <table class="matriz-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th *ngFor="let columna of matrizGenerada[0]; let j = index" class="matriz-column-header"> x{{ j }} </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fila of matrizGenerada; let i = index">
+          <th class="matriz-row-header"> x{{ i }} </th>
+          <td *ngFor="let elemento of fila" class="matriz-cell"> {{ elemento }} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="!matrizGenerada || matrizGenerada.length === 0">
+  </div>
+
+  <button class="logout-button" (click)="logout();resetearCopiado()">Cerrar sesión</button>
 </div>

@@ -11,8 +11,10 @@ import { EcuacionesService } from '../ecuaciones.service';
 export class EcuacionesComponent implements OnInit {
   currentEquation: Equation = new Equation();
   equations: Equation[] = [];
-  respuesta: any;
+  hamiltonianoGenerado: any;
+  matrizGenerada: any;
   token = sessionStorage.getItem('token');
+  copiado: boolean = false;
 
 
   constructor(private service: EcuacionesService) { }
@@ -37,7 +39,7 @@ export class EcuacionesComponent implements OnInit {
   }
 
   generarHamiltoniano(): void {
-    console.log("token metodo", this.token);
+    //console.log("token metodo", this.token);
 
     if (!this.token) {
       console.error('No se ha encontrado un token válido.');
@@ -48,8 +50,8 @@ export class EcuacionesComponent implements OnInit {
       (response: any) => {
         alert('Hamiltoniano generado correctamente');
         console.log("respuesta: ", response);
-        this.respuesta = this.formatResponse(response);
-        console.log("respuesta: ", this.respuesta);
+        this.hamiltonianoGenerado = this.formatearHamiltoniano(response);
+        console.log("respuesta: ", this.hamiltonianoGenerado);
       },
       (error) => {
         alert('Error al generar el Hamiltoniano');
@@ -57,7 +59,7 @@ export class EcuacionesComponent implements OnInit {
     );
   }
   // Generar una cadena de texto con la información de las ecuaciones y sumandos
-  formatResponse(response: any): string {
+  formatearHamiltoniano(response: any): string {
     let formattedResponse = '';
     if (response && response.ecuaciones) {
       response.ecuaciones.forEach((ecuacion: any, index: number) => {
@@ -77,7 +79,7 @@ export class EcuacionesComponent implements OnInit {
           });
           // Eliminar el último '+'
           equationString = equationString.slice(0, -2);
-          formattedResponse += `Hamiltoniano: ${equationString}\n`;
+          formattedResponse += `${equationString}\n`;
         } else {
           formattedResponse += `Hamiltoniano: Sin sumandos\n`;
         }
@@ -93,11 +95,12 @@ export class EcuacionesComponent implements OnInit {
       console.error('No se ha encontrado un token válido.');
       return;
     }
+    console.log("Ecucaciones: ", this.equations);
     // Realizar la solicitud con el token actual
     this.service.ejecutarCodigo(this.token, this.equations).subscribe(
       (response: any) => {
         alert('Código ejecutado correctamente');
-        this.respuesta = response.p;
+        //this.respuesta = response.p;
       },
       (error) => {
         alert('Error al ejecutar el código');
@@ -106,16 +109,32 @@ export class EcuacionesComponent implements OnInit {
   }
 
   generarMatriz(): void {
-    this.service.generarMatriz(this.token || '', this.currentEquation.eq).subscribe(
+    if (!this.token) {
+      console.error('No se ha encontrado un token válido.');
+      return;
+    }
+    console.log("Ecucaciones: ", this.equations);
+    this.service.generarMatriz(this.token || '', this.equations).subscribe(
       (response: any) => {
         alert('Matriz generada correctamente');
-        this.respuesta = response;
+        console.log("respuesta: ", response);
+        this.matrizGenerada = response.matriz;
+        console.log("respuesta: ", this.matrizGenerada);
       },
       (error) => {
         alert('Error al generar la matriz');
       }
     );
   }
+
+  copiarAlPortapapeles(texto: string): void {
+    navigator.clipboard.writeText(texto)
+    this.copiado = true;
+  }
+  resetearCopiado() {
+    this.copiado = false;
+  }
+
   logout(): void {
     sessionStorage.removeItem('token');
     window.location.href = '/login';

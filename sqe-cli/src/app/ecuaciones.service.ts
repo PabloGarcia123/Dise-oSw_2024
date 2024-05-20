@@ -20,7 +20,9 @@ export class EcuacionesService {
     return this.client.put('http://localhost:8080/dwave/generarCodigo', equations, { "headers": headers });
   }
 
-  generarMatriz(arg0: any, eq: String) {
-    return this.client.post('http://localhost:8080/generarMatriz', eq);
+  generarMatriz(token: string, equations: Equation[]) {
+    const headers = new HttpHeaders().set('token', token);
+    console.log(token, equations, headers);
+    return this.client.put('http://localhost:8080/ecuaciones/generarMatrizTriangular', equations, { "headers": headers });
   }
 }
