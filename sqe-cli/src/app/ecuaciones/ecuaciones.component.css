@@ -88,7 +88,7 @@
   text-decoration: underline;
 }
 
-.code-container {
+.hamiltoniano-container {
   position: relative;
   margin-top: 20px;
   padding: 15px;
@@ -145,11 +145,28 @@
   border: 1px solid #ddd;
 }
 
-.no-matrix-message {
+
+
+.code-container {
+  position: relative;
   margin-top: 20px;
-  font-style: italic;
-  color: #666;
-  text-align: center;
+  padding: 15px;
+  background-color: #eef;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+.output-container {
+  position: relative;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #eef;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: monospace;
+  white-space: pre-wrap;
 }
 
 .logout-button {

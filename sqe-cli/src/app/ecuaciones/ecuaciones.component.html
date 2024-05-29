@@ -4,25 +4,26 @@
   <div class="input-group">
     <input type="text" placeholder="Ecuación" [(ngModel)]="currentEquation.eq">
     <input type="number" placeholder="Lambda" min="1" [(ngModel)]="currentEquation.lambda">
-    <button class="add-button" (click)="add()">Añadir</button>
+    <button class="add-button" (click)="add();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Añadir</button>
   </div>
+  
   <div class="button-group">
-    <button class="generate-button" (click)="generarHamiltoniano();resetearCopiado()">Generar Hamiltoniano</button>
-    <button class="matriz-button" (click)="generarMatriz()">Generar Matriz</button>
-    <button class="execute-button" (click)="ejecutarCodigo()">Ejecutar Código</button>
+    <button class="generate-button" (click)="generarHamiltoniano();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Generar Hamiltoniano</button>
+    <button class="matriz-button" (click)="generarMatriz();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Generar Matriz</button>
+    <button class="execute-button" (click)="ejecutarCodigo();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Ejecutar Código</button>
   </div>
 
   <ul class="equations-list" *ngFor="let equation of equations">
     <li>
       {{ equation.eq }} {{ equation.lambda }} &nbsp;
-      <span class="remove-button" (click)="remove(equation);">Eliminar</span>
+      <span class="remove-button" (click)="remove(equation);resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Eliminar</span>
     </li>
   </ul>
 
-  <div class="code-container" *ngIf="hamiltonianoGenerado">
+  <div class="hamiltoniano-container" *ngIf="hamiltonianoGenerado">
     <code>{{ hamiltonianoGenerado }}</code>
-    <button class="copy-button" (click)="copiarAlPortapapeles(hamiltonianoGenerado)">
-      <img [src]="copiado ? 'assets/garrapata.png' : 'assets/copiar.png'" alt="Copiar" class="copy-icon">
+    <button class="copy-button" (click)="copiarHamiltonianoAlPortapapeles(hamiltonianoGenerado);resetearCopiadoC();resetearCopiadoR()">
+      <img [src]="h_copiado ? 'assets/garrapata.png' : 'assets/copiar.png'" alt="Copiar" class="copy-icon">
     </button>
   </div>
   
@@ -46,5 +47,22 @@
   <div *ngIf="!matrizGenerada || matrizGenerada.length === 0">
   </div>
 
-  <button class="logout-button" (click)="logout();resetearCopiado()">Cerrar sesión</button>
-</div>
+  <button class="logout-button" (click)="logout();resetearCopiadoC();resetearCopiadoH()">Cerrar sesión</button>
+  <button class="pagos-button" (click)="irPagos()"> Pagar </button>
+  <div class="code-container"*ngIf="codigoGenerado">
+    <h3>Codigo Generado</h3>
+    <pre><code>{{ codigoGenerado }}</code></pre>
+    <button class="copy-button" (click)="copiarCodigoAlPortapapeles(codigoGenerado);resetearCopiadoH();resetearCopiadoR()">
+      <img [src]="c_copiado ? 'assets/garrapata.png' : 'assets/copiar.png'" alt="Copiar" class="copy-icon">
+    </button>
+  </div>
+  
+  <div class="output-container"*ngIf="salidaGenerada">
+    <h3>Resultado de la Ejecución</h3>
+    <pre><code>{{ salidaGenerada }}</code></pre>
+    <button class="copy-button" (click)="copiarResultadoAlPortapapeles(salidaGenerada);resetearCopiadoH();resetearCopiadoC()">
+      <img [src]="r_copiado ? 'assets/garrapata.png' : 'assets/copiar.png'" alt="Copiar" class="copy-icon">
+    </button>
+  </div>
+  
+  

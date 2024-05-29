@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { PagosService } from '../pagos.service';
+//importar stripe
+import { Stripe } from '@stripe/stripe-js';
 
 declare let Stripe: any;
 
 @Component({
   selector: 'app-pagos',
   templateUrl: './pagos.component.html',
-  styleUrl: './pagos.component.css'
+  styleUrls: ['./pagos.component.css']
 })
 export class PagosComponent {
   importe: number = 10000;
@@ -18,19 +20,19 @@ export class PagosComponent {
   pagar() {
     this.service.pagar(this.importe).subscribe(
       result => {
-        this.token = result.client_secret
+        this.token = result.clientSecret;
+        this.showForm();
       },
       error => {
-        console.error('Error al pagar', error)
+        console.error('Error al pagar', error);
       }
     );
   }
 
   showForm() {
-    let elements = this.stripe.elements()
+    let elements = this.stripe.elements();
     let style = {
       base: {
-
         color: "#32325d", fontFamily: 'Arial, sans-serif',
         fontSmoothing: "antialiased", fontSize: "16px",
         "::placeholder": {
@@ -41,24 +43,24 @@ export class PagosComponent {
         fontFamily: 'Arial, sans-serif', color: "#fa755a",
         iconColor: "#fa755a"
       }
-    }
-    let card = elements.create("card", { style: style })
-    card.mount("#card-element")
+    };
+    let card = elements.create("card", { style: style });
+    card.mount("#card-element");
     card.on("change", function (event: any) {
       document.querySelector("button")!.disabled = event.empty;
       document.querySelector("#card-error")!.textContent = event.error ? event.error.message : "";
     });
 
-    let self = this
+    let self = this;
     let form = document.getElementById("payment-form");
     form!.addEventListener("submit", function (event) {
       event.preventDefault();
       self.payWithCard(card);
     });
-    form!.style.display = "block"
+    form!.style.display = "block";
   }
+
   payWithCard(card: any) {
-    let self = this
     this.stripe.confirmCardPayment(this.token, {
       payment_method: {
         card: card
@@ -69,7 +71,7 @@ export class PagosComponent {
       } else {
         if (response.paymentIntent.status === 'succeeded') {
           alert("Pago exitoso");
-          self.service.confirmarPago(this.token)
+          this.service.confirmarPago(this.token).subscribe();
         }
       }
     });

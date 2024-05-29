@@ -13,6 +13,6 @@ export class PagosService {
   }
   
   confirmarPago(token: any) {
-    throw new Error('Method not implemented.');
+    return this.client.post<any>(`http://localhost:9000/payments/confirmarPago`, { token });
   }
 }

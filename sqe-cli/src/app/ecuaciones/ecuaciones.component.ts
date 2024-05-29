@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Equation } from './Equation';
 import { EcuacionesService } from '../ecuaciones.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ecuaciones',
@@ -13,15 +14,19 @@ export class EcuacionesComponent implements OnInit {
   equations: Equation[] = [];
   hamiltonianoGenerado: any;
   matrizGenerada: any;
+  codigoGenerado: any;
+  salidaGenerada: any;
   token = sessionStorage.getItem('token');
-  copiado: boolean = false;
+  h_copiado: boolean = false;
+  c_copiado: boolean = false;
+  r_copiado: boolean = false;
 
-
-  constructor(private service: EcuacionesService) { }
+  constructor(private service: EcuacionesService,private router: Router) { }
 
   ngOnInit(): void {
 
   }
+
   add(): void {
     const copia = new Equation();
     copia.eq = this.currentEquation.eq;
@@ -48,9 +53,8 @@ export class EcuacionesComponent implements OnInit {
     // Realizar la solicitud con el token actual
     this.service.generarHamiltoniano(this.token, this.equations).subscribe(
       (response: any) => {
-        alert('Hamiltoniano generado correctamente');
-        console.log("respuesta: ", response);
         this.hamiltonianoGenerado = this.formatearHamiltoniano(response);
+        alert('Hamiltoniano generado correctamente');
         console.log("respuesta: ", this.hamiltonianoGenerado);
       },
       (error) => {
@@ -58,7 +62,7 @@ export class EcuacionesComponent implements OnInit {
       }
     );
   }
-  // Generar una cadena de texto con la información de las ecuaciones y sumandos
+ 
   formatearHamiltoniano(response: any): string {
     let formattedResponse = '';
     if (response && response.ecuaciones) {
@@ -90,24 +94,6 @@ export class EcuacionesComponent implements OnInit {
     return formattedResponse;
   }
 
-  ejecutarCodigo(): void {
-    if (!this.token) {
-      console.error('No se ha encontrado un token válido.');
-      return;
-    }
-    console.log("Ecucaciones: ", this.equations);
-    // Realizar la solicitud con el token actual
-    this.service.ejecutarCodigo(this.token, this.equations).subscribe(
-      (response: any) => {
-        alert('Código ejecutado correctamente');
-        //this.respuesta = response.p;
-      },
-      (error) => {
-        alert('Error al ejecutar el código');
-      }
-    );
-  }
-
   generarMatriz(): void {
     if (!this.token) {
       console.error('No se ha encontrado un token válido.');
@@ -116,9 +102,8 @@ export class EcuacionesComponent implements OnInit {
     console.log("Ecucaciones: ", this.equations);
     this.service.generarMatriz(this.token || '', this.equations).subscribe(
       (response: any) => {
-        alert('Matriz generada correctamente');
-        console.log("respuesta: ", response);
         this.matrizGenerada = response.matriz;
+        alert('Matriz generada correctamente');
         console.log("respuesta: ", this.matrizGenerada);
       },
       (error) => {
@@ -127,12 +112,56 @@ export class EcuacionesComponent implements OnInit {
     );
   }
 
-  copiarAlPortapapeles(texto: string): void {
-    navigator.clipboard.writeText(texto)
-    this.copiado = true;
+  ejecutarCodigo(): void {
+    if (!this.token) {
+      console.error('No se ha encontrado un token válido.');
+      return;
+    }
+    console.log("Ecuaciones: ", this.equations);
+    // Realizar la solicitud con el token actual
+    this.service.ejecutarCodigo(this.token, this.equations).subscribe(
+      (response: any) => {
+        console.log("respuesta: ", response);
+        alert('Código generado correctamente');
+        this.codigoGenerado = response.codigo;
+        this.salidaGenerada = response.respuesta;
+        console.log("respuesta: ", this.codigoGenerado);
+      },
+      (error) => {
+        alert('Error al ejecutar el código');
+      }
+    );
   }
-  resetearCopiado() {
-    this.copiado = false;
+
+  copiarHamiltonianoAlPortapapeles(texto: string): void {
+    navigator.clipboard.writeText(texto)
+    this.h_copiado = true;
+  }
+
+  copiarCodigoAlPortapapeles(texto: string): void {
+    navigator.clipboard.writeText(texto)
+    this.c_copiado = true;
+  }
+
+  copiarResultadoAlPortapapeles(texto: string): void {
+    navigator.clipboard.writeText(texto)
+    this.r_copiado = true;
+  }
+
+  resetearCopiadoH() {
+    this.h_copiado = false;
+  }
+  
+  resetearCopiadoC() {
+    this.c_copiado = false;
+  }
+
+  resetearCopiadoR() {
+    this.r_copiado = false;
+  }
+
+  irPagos(): void {
+    this.router.navigate(['/pagos']);
   }
 
   logout(): void {
