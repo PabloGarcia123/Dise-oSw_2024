@@ -11,6 +11,7 @@ export class RegisterComponent{
   pwd1: string = '';
   pwd2: string = '';
   error: string = '';
+  pwd_correcta: boolean= false;
   
   constructor( private userService: UsersService) { }
   
@@ -18,14 +19,49 @@ export class RegisterComponent{
   }
 
   registrar() {
+    if (this.pwd1 !== this.pwd2) {
+      alert('Las contraseñas no coinciden. Por favor, asegúrate de ingresar la misma contraseña en ambos campos.');
+      return; // Abortar el registro si las contraseñas no coinciden
+    }
+
+    if (!this.verificarPwdSegura(this.pwd1)) {
+      alert('La contraseña no es segura. Debe cumplir los siguientes requisitos: al menos 8 caracteres, 1 número, 1 mayúscula, 1 minúscula y un carácter especial');
+      return; // Abortar el registro si la contraseña no es segura
+    }
+    
     this.userService.registrar(this.email, this.pwd1, this.pwd2).subscribe(
       result => {
-        //alert('Usuario registrado')
+        alert('Usuario registrado')
+        window.location.href = '/login';
       },
       error => {
-        this.error = error;
+        
+        if(error.status=== 409){
+          alert('Usted ya está registrado')
+        }
+        else{
+          alert('Error al crear la cuenta')
+        }
       }
-    ); // Add closing parenthesis here
+    ); 
+    
   }
+  verificarPwdSegura(pwd: string): boolean {
+    // Verificar longitud mínima de 8 caracteres
+    if (pwd.length < 8) return false;
 
+    // Verificar al menos 1 número
+    if (!/\d/.test(pwd)) return false;
+
+    // Verificar al menos 1 mayúscula
+    if (!/[A-Z]/.test(pwd)) return false;
+
+    // Verificar al menos 1 minúscula
+    if (!/[a-z]/.test(pwd)) return false;
+
+    // Verificar al menos 1 carácter especial
+    if (!/[^A-Za-z0-9]/.test(pwd)) return false;
+
+    return true;
+  }
 }

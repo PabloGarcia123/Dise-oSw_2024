@@ -47,6 +47,13 @@
   transition: background-color 0.3s ease;
 }
 
+button:disabled {
+  background-color: grey; /* Color de fondo cuando el botón está deshabilitado */
+  color: white; /* Color del texto cuando el botón está deshabilitado */
+  cursor: not-allowed; /* Cambiar el cursor para indicar que el botón no es clicable */
+  opacity: 0.7; /* Opcional: hacer el botón un poco transparente */
+}
+
 .button-group button:hover {
   background-color: #45a049;
 }

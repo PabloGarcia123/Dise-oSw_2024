@@ -20,6 +20,9 @@ export class EcuacionesComponent implements OnInit {
   h_copiado: boolean = false;
   c_copiado: boolean = false;
   r_copiado: boolean = false;
+  isMatrizButtonEnabled: boolean = false;
+  isExecuteButtonEnabled: boolean = false;
+  isHamiltonianoButtonEnabled: boolean = false;
 
   constructor(private service: EcuacionesService,private router: Router) { }
 
@@ -32,6 +35,9 @@ export class EcuacionesComponent implements OnInit {
     copia.eq = this.currentEquation.eq;
     copia.lambda = this.currentEquation.lambda;
     this.equations.push(copia);
+    this.isHamiltonianoButtonEnabled=true;
+    this.isExecuteButtonEnabled=false;
+    this.isMatrizButtonEnabled=false;
   }
 
   remove(equation: Equation): void {
@@ -41,6 +47,8 @@ export class EcuacionesComponent implements OnInit {
         break;
       }
     }
+    this.isMatrizButtonEnabled=false;
+    this.isExecuteButtonEnabled=false;
   }
 
   generarHamiltoniano(): void {
@@ -48,6 +56,7 @@ export class EcuacionesComponent implements OnInit {
 
     if (!this.token) {
       console.error('No se ha encontrado un token válido.');
+      alert('Por favor inicie sesion correctamente');
       return;
     }
     // Realizar la solicitud con el token actual
@@ -55,10 +64,17 @@ export class EcuacionesComponent implements OnInit {
       (response: any) => {
         this.hamiltonianoGenerado = this.formatearHamiltoniano(response);
         alert('Hamiltoniano generado correctamente');
+        this.isMatrizButtonEnabled=true;
         console.log("respuesta: ", this.hamiltonianoGenerado);
       },
       (error) => {
-        alert('Error al generar el Hamiltoniano');
+        if(error.status === 403){
+          alert('Por favor inicie sesion correctamente');
+        }else if(error.status === 500){
+          alert('Error de formato, si se han usado valores negativos debe poner un más primero ej -4x0+-3x1+-2x2 1 ');
+        }else{
+          alert('Error al generar el Hamiltoniano');
+        }
       }
     );
   }
@@ -105,6 +121,7 @@ export class EcuacionesComponent implements OnInit {
         this.matrizGenerada = response.matriz;
         alert('Matriz generada correctamente');
         console.log("respuesta: ", this.matrizGenerada);
+        this.isExecuteButtonEnabled=true;
       },
       (error) => {
         alert('Error al generar la matriz');

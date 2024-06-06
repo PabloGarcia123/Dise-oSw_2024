@@ -8,9 +8,9 @@
   </div>
   
   <div class="button-group">
-    <button class="generate-button" (click)="generarHamiltoniano();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Generar Hamiltoniano</button>
-    <button class="matriz-button" (click)="generarMatriz();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Generar Matriz</button>
-    <button class="execute-button" (click)="ejecutarCodigo();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()">Ejecutar Código</button>
+    <button class="generate-button" (click)="generarHamiltoniano();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()" [disabled]="!isHamiltonianoButtonEnabled">Generar Hamiltoniano</button>
+    <button class="matriz-button" (click)="generarMatriz();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()" [disabled]="!isMatrizButtonEnabled">Generar Matriz</button>
+    <button class="execute-button" (click)="ejecutarCodigo();resetearCopiadoH();resetearCopiadoC();resetearCopiadoR()" [disabled]="!isExecuteButtonEnabled">Ejecutar Código</button>
   </div>
 
   <ul class="equations-list" *ngFor="let equation of equations">
