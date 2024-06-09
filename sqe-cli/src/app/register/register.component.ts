@@ -19,25 +19,29 @@ export class RegisterComponent{
   }
 
   registrar() {
+    if (!this.verificarEmail(this.email)) {
+      alert('El correo electrónico no es válido. Por favor, ingresa un correo electrónico válido.');
+      return; 
+  }
     if (this.pwd1 !== this.pwd2) {
       alert('Las contraseñas no coinciden. Por favor, asegúrate de ingresar la misma contraseña en ambos campos.');
-      return; // Abortar el registro si las contraseñas no coinciden
+      return;
     }
 
     if (!this.verificarPwdSegura(this.pwd1)) {
       alert('La contraseña no es segura. Debe cumplir los siguientes requisitos: al menos 8 caracteres, 1 número, 1 mayúscula, 1 minúscula y un carácter especial');
-      return; // Abortar el registro si la contraseña no es segura
+      return;
     }
     
     this.userService.registrar(this.email, this.pwd1, this.pwd2).subscribe(
       result => {
-        alert('Usuario registrado')
+        alert('Registro completado con exito')
         window.location.href = '/login';
       },
       error => {
         
         if(error.status=== 409){
-          alert('Usted ya está registrado')
+          alert('Usuario ya registrado')
         }
         else{
           alert('Error al crear la cuenta')
@@ -46,20 +50,19 @@ export class RegisterComponent{
     ); 
     
   }
+  verificarEmail(email: string): boolean {
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return regex.test(email);
+  }
   verificarPwdSegura(pwd: string): boolean {
-    // Verificar longitud mínima de 8 caracteres
     if (pwd.length < 8) return false;
 
-    // Verificar al menos 1 número
     if (!/\d/.test(pwd)) return false;
 
-    // Verificar al menos 1 mayúscula
     if (!/[A-Z]/.test(pwd)) return false;
 
-    // Verificar al menos 1 minúscula
     if (!/[a-z]/.test(pwd)) return false;
 
-    // Verificar al menos 1 carácter especial
     if (!/[^A-Za-z0-9]/.test(pwd)) return false;
 
     return true;

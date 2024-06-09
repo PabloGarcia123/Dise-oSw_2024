@@ -31,10 +31,16 @@ export class EcuacionesComponent implements OnInit {
   }
 
   add(): void {
+    if (!this.token) {
+      alert('Por favor inicie sesion correctamente');
+      //console.error('No se ha encontrado un token válido.');
+      return;
+    }
     const copia = new Equation();
     copia.eq = this.currentEquation.eq;
     copia.lambda = this.currentEquation.lambda;
     this.equations.push(copia);
+    this.limpiar();
     this.isHamiltonianoButtonEnabled=true;
     this.isExecuteButtonEnabled=false;
     this.isMatrizButtonEnabled=false;
@@ -47,31 +53,52 @@ export class EcuacionesComponent implements OnInit {
         break;
       }
     }
+    this.limpiar();
     this.isMatrizButtonEnabled=false;
     this.isExecuteButtonEnabled=false;
+    if(this.equations.length===0){
+      this.isHamiltonianoButtonEnabled=false;
+    }
+  }
+  agregarSignoMas(): Equation[] {
+    const ecuaciones: Equation[]=[];
+    for (let i = 0; i < this.equations.length; i++) {
+      const copia = new Equation();
+      copia.lambda = this.equations[i].lambda;
+      copia.eq=this.equations[i].eq.replace(/(\d)-/g, '$1+-');
+      ecuaciones.push(copia);
+    }
+    return ecuaciones;
+  }
+  limpiar():void{
+    this.hamiltonianoGenerado=null;
+    this.matrizGenerada=null;
+    this.codigoGenerado=null;
+    this.salidaGenerada=null;
   }
 
+  
   generarHamiltoniano(): void {
     //console.log("token metodo", this.token);
 
     if (!this.token) {
-      console.error('No se ha encontrado un token válido.');
       alert('Por favor inicie sesion correctamente');
       return;
     }
-    // Realizar la solicitud con el token actual
-    this.service.generarHamiltoniano(this.token, this.equations).subscribe(
+    const ecuaciones=this.agregarSignoMas();;
+
+    this.service.generarHamiltoniano(this.token, ecuaciones).subscribe(
       (response: any) => {
         this.hamiltonianoGenerado = this.formatearHamiltoniano(response);
         alert('Hamiltoniano generado correctamente');
         this.isMatrizButtonEnabled=true;
-        console.log("respuesta: ", this.hamiltonianoGenerado);
+        //console.log("respuesta: ", this.hamiltonianoGenerado);
       },
       (error) => {
         if(error.status === 403){
           alert('Por favor inicie sesion correctamente');
         }else if(error.status === 500){
-          alert('Error de formato, si se han usado valores negativos debe poner un más primero ej -4x0+-3x1+-2x2 1 ');
+          alert('Error de formato al escribir el hamiltoniano, siga este formato para la función objetivo 4x0+3x1+2x2 y este para las restricciones 4x0+3x1+2x2=10');
         }else{
           alert('Error al generar el Hamiltoniano');
         }
@@ -87,17 +114,13 @@ export class EcuacionesComponent implements OnInit {
           let equationString = '';
           ecuacion.sumandos.forEach((sumando: any) => {
             if (sumando.factor !== undefined && sumando.indexB !== undefined) {
-              // Sumando doble
               equationString += `${sumando.factor}x${sumando.index}x${sumando.indexB} + `;
             } else if (sumando.factor !== undefined && sumando.index !== undefined) {
-              // Sumando simple
               equationString += `${sumando.factor}x${sumando.index} + `;
             } else {
-              // Sumando inválido
               equationString += 'Sumando inválido';
             }
           });
-          // Eliminar el último '+'
           equationString = equationString.slice(0, -2);
           formattedResponse += `${equationString}\n`;
         } else {
@@ -112,15 +135,16 @@ export class EcuacionesComponent implements OnInit {
 
   generarMatriz(): void {
     if (!this.token) {
-      console.error('No se ha encontrado un token válido.');
+      alert('Por favor inicie sesion correctamente');
+      //console.error('No se ha encontrado un token válido.');
       return;
     }
-    console.log("Ecucaciones: ", this.equations);
+    //console.log("Ecucaciones: ", this.equations);
     this.service.generarMatriz(this.token || '', this.equations).subscribe(
       (response: any) => {
         this.matrizGenerada = response.matriz;
         alert('Matriz generada correctamente');
-        console.log("respuesta: ", this.matrizGenerada);
+        //console.log("respuesta: ", this.matrizGenerada);
         this.isExecuteButtonEnabled=true;
       },
       (error) => {
@@ -131,18 +155,18 @@ export class EcuacionesComponent implements OnInit {
 
   ejecutarCodigo(): void {
     if (!this.token) {
-      console.error('No se ha encontrado un token válido.');
+      alert('Por favor inicie sesion correctamente');
+      //console.error('No se ha encontrado un token válido.');
       return;
     }
-    console.log("Ecuaciones: ", this.equations);
-    // Realizar la solicitud con el token actual
+    //console.log("Ecuaciones: ", this.equations);
     this.service.ejecutarCodigo(this.token, this.equations).subscribe(
       (response: any) => {
-        console.log("respuesta: ", response);
+        //console.log("respuesta: ", response);
         alert('Código generado correctamente');
         this.codigoGenerado = response.codigo;
         this.salidaGenerada = response.respuesta;
-        console.log("respuesta: ", this.codigoGenerado);
+        //console.log("respuesta: ", this.codigoGenerado);
       },
       (error) => {
         alert('Error al ejecutar el código');

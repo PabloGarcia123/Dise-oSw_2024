@@ -4,7 +4,7 @@ import { UsersService } from '../users.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'] // La propiedad es 'styleUrls' en lugar de 'styleUrl'
+  styleUrls: ['./login.component.css'] 
 })
 export class LoginComponent implements OnInit {
 [x: string]: any;
@@ -27,8 +27,6 @@ export class LoginComponent implements OnInit {
       result => {
         sessionStorage.removeItem('token');
         sessionStorage.setItem('token', result.token);
-        
-        console.log("token login", result.token);
         this.successMessage = '¡Inicio de sesión exitoso!';
         this.error = ''; 
        
@@ -37,8 +35,15 @@ export class LoginComponent implements OnInit {
       },
       error => {
         console.log('Error:', error);
-        this.error = 'Ha ocurrido un error al iniciar sesión.';
-        this.successMessage = ''; // Reinicia el mensaje de éxito
+        if (error.status===403){
+          this.error='Error en los credenciales'
+        }else{
+          this.error = 'Ha ocurrido un error al iniciar sesión.';
+        }
+        setTimeout(() => {
+          this.error = '';
+        }, 2000);
+        this.successMessage = '';
       }
     );
   }

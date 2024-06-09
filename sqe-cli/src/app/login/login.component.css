@@ -1,6 +1,27 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1.5rem;
+
+    &:after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-color: #34AF6D;
+        width: 60%;
+        height: 100vh;
+        clip-path: polygon(0 100%, 0 0, 100% 0, 70% 100%);
+        z-index: -1;
+    }
+}
+
 .login-container {
     width: 300px;
     margin: 0 auto;
+    margin-top: -200px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -35,4 +56,19 @@
 
 .success-message {
     color: limegreen;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.error-message {
+    color: rgb(238, 52, 52);
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+}
+
+.resigter{
+    position: absolute;
 }
